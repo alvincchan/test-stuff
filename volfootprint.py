@@ -27,14 +27,35 @@ def readable_size(size):
                 size /= 1024.0
         return "%3.2f %s" % (size, 'PB')
 
-list_in = NaElement('volume-footprint-get-iter')
-cmd = filer.invoke_elem(list_in)
+#list_in = NaElement('volume-footprint-get-iter')
+#cmd = filer.invoke_elem(list_in)
+tag = "tag"
 
-attrib_info = cmd.child_get('attributes-list')
-result = attrib_info.children_get()
+while True:
+        list_in = NaElement('volume-footprint-get-iter')
+        cmd = filer.invoke_elem(list_in)
+        if tag:
+                list_in.child_add_string('tag', tag)
 
-for attrib_list in result:
-		next_tag = cmd.child_get_string("next-tag")
-        attrib_name = attrib_list.child_get_string('volume')
-        vol_meta = readable_size(int(attrib_list.child_get_string('flexvol-metadata-footprint')))
-        print("Volume: " + attrib_name +"\nMeta Footprint: " + vol_meta + "\n")
+        #cmd = filer.invoke_elem(list_in)
+        next_tag = cmd.child_get_string('next-tag')
+        attrib_info = cmd.child_get('attributes-list')
+        result = attrib_info.children_get()
+
+        for attrib_list in result:
+                attrib_name = attrib_list.child_get_string('volume')
+                vol_meta = readable_size(int(attrib_list.child_get_string('flexvol-metadata-footprint')))
+                print("Volume: " + attrib_name +"\nMeta Footprint: " + vol_meta + "\n")
+
+        if not tag:
+                break
+#vol_input = sys.argv[3]
+#list_in.child_add_string('query', vol_input)
+
+#attrib_info = cmd.child_get('attributes-list')
+#result = attrib_info.children_get()
+
+#for attrib_list in result:
+        #attrib_name = attrib_list.child_get_string('volume')
+        #vol_meta = readable_size(int(attrib_list.child_get_string('flexvol-metadata-footprint')))
+        #print("Volume: " + attrib_name +"\nMeta Footprint: " + vol_meta + "\n")
